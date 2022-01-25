@@ -1,5 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 
 void main() {
   runApp(const MyApp());
@@ -12,11 +12,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Licznik klientów',
+      title: 'Customer Counter',
       theme: ThemeData(
         primarySwatch: Colors.lightGreen,
       ),
-      home: const MyHomePage(title: 'Licznik klientów'),
+      home: const MyHomePage(title: 'Customer counter'),
     );
   }
 }
@@ -41,8 +41,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-
-
   void _decrementCounter() {
     setState(() {
       if (_counter > 0) _counter--;
@@ -54,33 +52,74 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter = 0;
     });
   }
+ int maxCounter(var maxValue, var _maxCounter){
+   if(int.parse(maxValue) > 0 )
+     {
+       return  int.parse(maxValue);
+     }
+   else return _maxCounter;
+ }
+
+  backgroundGradient() {
+
+    if(_maxCounter - _counter > 5)
+    return LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          new Color(0xff8bc34a),
+          new Color(0xff425b24),
+//          Colors.black
+        ]);
+    if(_maxCounter - _counter <= 5 && _maxCounter - _counter >= 0)
+      return LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            new Color(0xffc3bf4a),
+            new Color(0xff5b5a24),
+ //           Colors.black
+          ]);
+    if(_maxCounter - _counter < 0)
+      return LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            new Color(0xffc34a4a),
+            new Color(0xff5a2222),
+         //   Colors.black
+          ]);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: new Color(0xffb8ffab),
+      //   backgroundColor: BGK(),
 
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: backgroundGradient(),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(padding: EdgeInsets.only(top: 5)),
             TextField(
               onChanged: (maxValue) {
-                setState(() {
-                });
-                _maxCounter = int.parse(maxValue);
+        //        setState(() {});
+                _maxCounter = maxCounter(maxValue, _maxCounter);
+                setState(() {});
               },
               keyboardType: TextInputType.number,
               maxLength: 6,
               decoration: InputDecoration(
-                fillColor: Colors.white,
+                fillColor: Colors.lightGreen,
                 filled: true,
                 border: OutlineInputBorder(),
-                labelText: 'Maksymalna liczba  $_maxCounter',
+                labelText: 'Maximum number  $_maxCounter',
               ),
               style: TextStyle(
                 color: Colors.black,
@@ -93,10 +132,10 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 ElevatedButton(
-                  onPressed: _incrementCounter,
+                  onPressed: _decrementCounter,
                   child: Text(
-                    'Zwiększ licznik',
-                    style: TextStyle(fontSize: 20),
+                    '-',
+                    style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   style: ElevatedButton.styleFrom(
@@ -104,10 +143,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: _decrementCounter,
+                  onPressed: _incrementCounter,
                   child: Text(
-                    'Zmniejsz licznik',
-                    style: TextStyle(fontSize: 20),
+                    '+',
+                    style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   style: ElevatedButton.styleFrom(
@@ -118,25 +157,30 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Padding(padding: EdgeInsets.only(top: 25)),
             const Text(
-              'Obecnie:',
+              'Currently:',
               style: TextStyle(fontSize: 25),
             ),
             Text('$_counter', style: TextStyle(fontSize: 45)),
             Padding(padding: EdgeInsets.only(top: 15)),
+            if (_maxCounter - _counter > 5)
+              Text(
+                'OK',
+                style: TextStyle(color: Colors.black, fontSize: 25),
+              ),
             if (_maxCounter - _counter <= 5 && _maxCounter - _counter > 0)
               Text(
-                'Do granicy brakuje ${_maxCounter - _counter}',
-                style: TextStyle(color: Colors.orange, fontSize: 25),
+                'To the limit ${_maxCounter - _counter}',
+                style: TextStyle(color: Colors.black, fontSize: 25),
               ),
             if (_counter == _maxCounter)
               Text(
-                'Maksymalna liczba',
-                style: TextStyle(fontSize: 25, color: Colors.yellow),
+                'Limit',
+                style: TextStyle(fontSize: 25, color: Colors.black),
               ),
             if (_counter > _maxCounter)
               Text(
-                'Za dużo o ${_counter - _maxCounter}',
-                style: TextStyle(color: Colors.red, fontSize: 25),
+                'Too many coustomers (${_counter - _maxCounter})',
+                style: TextStyle(color: Colors.black, fontSize: 25),
               ),
           ],
         ),
@@ -144,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
         onPressed: _resetCounter,
-        tooltip: 'Zerowanie',
+        tooltip: 'Reset',
         child: Text('Reset'),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
